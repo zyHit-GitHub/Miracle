@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Test </title>
+</head>
+<style>
+.closediv{
+    width: 50px;
+    height: 50px;
+    background: #2A303B;
+    line-height: 50px;
+    text-align: center;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    color:#FFF;
+    cursor: pointer;
+    padding: 10px;
+}
+    .close{
+    display: inline-block;
+    width:30px;
+    height:30px;
+    overflow: hidden;
+    position: relative;
+}
+
+.close::before,.close::after{
+    content:"";
+    position: absolute;
+    top:50%;
+    left:0;
+    margin-top: -1px;
+    background-color: #FFF;
+    width:100%;
+    height:3px;
+}
+.close::before{
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+}
+.close::after{
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    -moz-transform: rotate(-45deg);
+    -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
+}
+</style>
+
+<body>
+    <div class="div-header">
+         <div class="closediv"><span class="close"></span></div>
+    </div>
+</body>
+
+</html>
