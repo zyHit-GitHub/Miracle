@@ -53,11 +53,39 @@
     -ms-transform: rotate(-45deg);
     -o-transform: rotate(-45deg);
 }
+    .prev{
+            position: absolute;
+    top: 110px;
+    left: 30px;
+    display: inline-block;
+    margin: -15px;
+    border-left: 4px solid #AAAFBA;
+    border-bottom: 4px solid #AAAFBA;
+    width: 40px;
+    height: 40px;
+    transform: rotate(45deg);
+    }
+    .next{
+            position: absolute;
+    top: 110px;
+    right: 30px;
+    display: inline-block;
+    margin: -15px;
+    border-right: 4px solid #AAAFBA;
+    border-bottom: 4px solid #AAAFBA;
+    width: 40px;
+    height: 40px;
+    transform: rotate(-45deg);
+    }
 </style>
 
 <body>
     <div class="div-header">
          <div class="closediv"><span class="close"></span></div>
+         
+         
+         <div class="prev"></div>
+          <div class="next"></div>
     </div>
 </body>
 
