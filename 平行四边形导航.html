@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Test </title>
+</head>
+<style>
+    .menu {
+        margin: 0 auto;
+        display: inline-block;
+        float: right;
+    }
+    
+    .meun-item{
+                position: relative;
+        display: inline-block;
+        border: 0;
+        background: transparent;
+        width: 140px;
+        margin-right: 10px;
+        padding: 0.7rem 0rem;
+        text-align: center;
+        color: white;
+        text-transform: uppercase;
+        text-decoration: none;
+        font: 18px/1 MicrosoftYaHei;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    a:focus {
+        outline: none;
+    }
+
+    .menu a:link,.menu a:visited, .menu a:hover, .menu a:active {
+        text-decoration: none
+    }
+    
+    .menu>.meun-item::before,.menu>.meun-item:first-child::after,.menu>.meun-item:last-child::before{
+                content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+        background: #373D4C;
+        transform: skew(-25deg);
+    }
+
+
+    .menu>.meun-item:last-child::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 20px;
+        right: -11px;
+        z-index: -1;
+        background: #373D4C;
+    }
+
+    .meun-item:hover::before,
+    .menu>.meun-item:last-child:hover::before,
+    .menu>.meun-item:first-child:hover::after,
+    .menu>.meun-item:first-child:hover::before,
+    .menu>.meun-item:last-child:hover::after {
+        background: #1C86EE;
+    }
+</style>
+
+<body>
+    <div class="div-header">
+        <div class="menu">
+            <a class="meun-item" href="#" target="_blank">测试一</a>
+            <a class="meun-item" href="#" target="_blank">测试二</a>
+            <a class="meun-item" href="#" target="_blank">测试三</a>
+            <a class="meun-item" href="#" target="_blank">测试四</a>
+        </div>
+    </div>
+</body>
+
+</html>
