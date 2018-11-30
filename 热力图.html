@@ -1,0 +1,221 @@
+<html>
+<head></head>
+<body>
+	<div>
+		<canvas id="test" width="100" height="100"></canvas>
+	</div>
+	<div id="container"></div>
+	<script type="text/javascript">
+		// var testNode = document.getElementById("test");
+		// var ctx = testNode.getContext('2d');
+		// var radius = 20;
+		// ctx.beginPath();
+		// ctx.arc(radius,radius,radius,0, 2 * Math.PI,false);
+		
+		// //添加径向/圆渐变
+		// var gradient = ctx.createRadialGradient(radius,radius,0,radius,radius,radius)
+		// gradient.addColorStop(0,'rgba(0,0,0,1)');
+		// gradient.addColorStop(1,'rgba(0,0,0,0)');
+		// ctx.fillStyle = gradient;
+		
+		// ctx.closePath();
+		
+		// ctx.fill();
+		
+		
+		var warpper = document.getElementById("container");
+		
+		var defaultRadius = 30;
+		var distance = 0;
+		var minCount = 0;
+		var maxCount = 100;
+		var renderBoundaries = [10000, 10000, 0, 0];
+		var palette = getPointColor();
+
+		var canvas = document.createElement('canvas');
+		var shadowCanvas = document.createElement('canvas');
+		var shadowCtx = shadowCanvas.getContext('2d');
+		var ctx = canvas.getContext('2d');
+		canvas.className = 'heatmap-canvas';
+		canvas.width = shadowCanvas.width = 1500;
+		canvas.height = shadowCanvas.height = 700;
+		canvas.style.cssText = shadowCanvas.style.cssText = 'position:absolute;left:0;top:0;';
+		warpper.appendChild(canvas);
+		
+		for(i = 0; i < 500;i++){
+			var point = {};
+			point.x = Math.floor(Math.random()*(1000-1)+200);
+			point.y = Math.floor(Math.random()*(500-1)+100);
+			point.value = Math.floor(Math.random()*(100-1)+1);
+			//distance  = Math.floor(Math.random()*(100-1)- 50)
+			//warpper.appendChild(pointTmp(point,defaultRadius));
+			//distance = distance ;
+			drawPoint(point,defaultRadius);
+			
+		}
+		//drawPanel();
+		colorizeCtx();
+
+		
+		warpper.style.position = 'relative';
+		
+		warpper.appendChild(document.createElement('br'));
+		warpper.appendChild(document.createElement('br'));
+		warpper.appendChild(document.createElement('br'));
+		warpper.appendChild(getColorPalette());
+
+		function pointTmp(point,radius){
+			var tplCanvas = document.createElement('canvas');
+			var tplCtx = tplCanvas.getContext('2d');
+			var x = radius;
+			var y = radius;
+			tplCanvas.width =  radius*2;
+			tplCanvas.height = radius*2;	
+			tplCtx.beginPath();
+						//添加径向/圆渐变
+			tplCtx.arc(x,y,radius,0, 2 * Math.PI,false);
+			var gradient = tplCtx.createRadialGradient(x,y,0,x,y,radius)
+			gradient.addColorStop(0,'rgba(0,0,0,1)');
+			gradient.addColorStop(1,'rgba(0,0,0,0)');
+			tplCtx.fillStyle = gradient;
+			tplCtx.closePath();
+			tplCtx.fill();
+			return tplCanvas
+		}
+		
+		function drawPoint(point,radius){
+			var x = radius;
+			var y = radius;
+			var tmp = pointTmp(point,radius);
+			var rectX = point.x - radius;
+			var rectY = point.y - radius;
+			
+
+			var alpha = (point.value - minCount)/(maxCount - minCount);
+			alpha = alpha > 1 ? 1:alpha;
+			console.log(alpha)
+			shadowCtx.globalAlpha = alpha;
+			shadowCtx.drawImage(tmp,rectX,rectY);
+
+	         if (rectX < renderBoundaries[0]) {
+	            renderBoundaries[0] = rectX;
+	          } 
+	          if (rectY < renderBoundaries[1]) {
+	            renderBoundaries[1] = rectY;
+	          }
+	          if (rectX + 2*radius > renderBoundaries[2]) {
+	            renderBoundaries[2] = rectX + 2*radius;
+	          }
+	          if (rectY + 2*radius > renderBoundaries[3]) {
+	            renderBoundaries[3] = rectY + 2*radius;
+	          }
+	
+		}
+		function drawPanel(){
+			var width = renderBoundaries[2] - renderBoundaries[0];
+			var height = renderBoundaries[3] - renderBoundaries[1];
+			var x = renderBoundaries[0];
+			var y = renderBoundaries[1];
+			var img = shadowCtx.getImageData(x, y, width, height);
+			ctx.putImageData(img,x,y)
+
+		}
+		//着色
+		function colorizeCtx(){
+			var width = renderBoundaries[2] - renderBoundaries[0];
+			var height = renderBoundaries[3] - renderBoundaries[1];
+			var x = renderBoundaries[0];
+			var y = renderBoundaries[1];
+			
+			var img = shadowCtx.getImageData(x, y, width, height);
+			var imgData = img.data;
+			var len = imgData.length;
+			var opacity = 0;
+			var maxOpacity = 255;
+			var minOpacity  = 0;
+			var bln = false;
+
+			  for(var i = 3;i<len;i+=4){
+				var alpha = imgData[i];
+				var offset = alpha * 4;
+				if(!offset){
+					continue;
+				}
+
+				var finalAlpha;
+		        if (opacity > 0) {
+		          finalAlpha = opacity;
+		        } else {
+		          if (alpha < maxOpacity) {
+		            if (alpha < minOpacity) {
+		              finalAlpha = minOpacity;
+		            } else {
+		              finalAlpha = alpha;
+		            }
+		          } else {
+		            finalAlpha = maxOpacity;
+		          }
+		        }
+
+				imgData[i-3] = palette[offset];
+				imgData[i-2] = palette[offset + 1];
+				imgData[i-1] = palette[offset + 2];
+				imgData[i] = bln ? palette[offset + 3] : finalAlpha;
+			  }
+			
+			img.data = imgData;
+			ctx.putImageData(img,x,y)
+		}
+
+		//创建色带
+		function getColorPalette(){
+			var paletteCanvas = document.createElement('canvas');
+			var paletteCtx = paletteCanvas.getContext('2d');
+			var defaultGradient = { 0.25: "rgb(0,0,255)",
+									0.55: "rgb(0,255,255)",
+									0.65: "rgb(0,255,0)", 
+									0.95: "yellow", 
+									1.0: "rgb(255,0,0)"} ;
+			
+			paletteCanvas.width = 256;
+			paletteCanvas.height = 10;
+			
+			
+			var gradient = paletteCtx.createLinearGradient(0,0,256,1);
+
+			for(var key in defaultGradient){
+				gradient.addColorStop(key,defaultGradient[key]);
+			}
+			
+			paletteCtx.fillStyle = gradient;
+			
+			paletteCtx.fillRect(0,0,256,10);
+			
+			return paletteCanvas;
+		}
+		
+		
+		function getPointColor(){
+			var paletteCanvas = document.createElement('canvas');
+			var paletteCtx = paletteCanvas.getContext('2d');
+			var defaultGradient = { 0.25: "rgb(0,0,255)",
+									//0.55: "rgb(0,255,255)",
+									0.55: "rgb(0,255,0)", 
+									0.85: "yellow", 
+									1.0: "rgb(255,0,0)"} ;
+			
+			paletteCanvas.width = 256;
+			paletteCanvas.height = 1;
+			var gradient = paletteCtx.createLinearGradient(0,0,256,1);
+			for(var key in defaultGradient){
+				gradient.addColorStop(key,defaultGradient[key]);
+			}
+			paletteCtx.fillStyle = gradient;
+			paletteCtx.fillRect(0,0,256,1);
+			return paletteCtx.getImageData(0,0,256,1).data;
+		}
+
+		
+	</script>
+</body>
+</html>
