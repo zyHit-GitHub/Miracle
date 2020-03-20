@@ -1,0 +1,40 @@
+<html>
+    <head>
+　　　　<meta charset="UTF-8">
+　　　　<title>css六边形</title>
+　　　　<style type="text/css">
+        .center{
+            display: flex;
+        }
+  .list {
+    width: 32px;
+    height: 48px;
+    overflow: hidden;
+    transform: rotate(120deg);
+    /*  margin: 200px; */
+  }
+  .list_child {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transform: rotate(-60deg);
+  }
+  .list_child_child {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transform: rotate(-60deg);
+    background-color: #000;
+  }
+　　　　</style>
+　　</head>
+　　<body>
+　　    <div class="center">
+        <div class="list">
+          <div class="list_child">
+            <div class="list_child_child"></div>
+          </div>
+        </div>
+　　　　</div>
+　　</body>
+</html>
